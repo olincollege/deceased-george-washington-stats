@@ -14,7 +14,12 @@ def scraper(Firstname,Lastname):
     #Section 1: recording the website page as an .html file
 
     #Define the url based on user input
-    url = f"https://www.findagrave.com/memorial/search?firstname={Firstname}&middlename=&lastname={Lastname}&birthyear=&birthyearfilter=&deathyear=&deathyearfilter=&location=&locationId=&memorialid=&mcid=&linkedToName=&datefilter=&orderby=r&plot="
+    url = (
+        f"https://www.findagrave.com/memorial/search?firstname={Firstname}"
+        f"&middlename=&lastname={Lastname}&birthyear=&birthyearfilter=&death"
+        "year=&deathyearfilter=&location=&locationId=&memorialid=&mcid=&linked"
+        "ToName=&datefilter=&orderby=r&plot="
+    )
 
     #produce html file from url of main page
     search_result = requests.get(url)
@@ -26,9 +31,13 @@ def scraper(Firstname,Lastname):
 
     #Find the div containing the maximum number of pages
     max_page = parsed.find(id = "gotoPage")
-    #Find the maximum page element from the div
 
-    print(max_page)
+    #max_page functions as a dictionary where we can enter the
+    #string of any element in the div to find its value
+    max_page = max_page["max"]
+
+
+
 
 
 
