@@ -99,4 +99,7 @@ def get_info(first_name="George", last_name="Washington"):
                 # record scraped data in data frame
                 data_table = data_table.append({"Names": name.strip(), "Birth Year": birth_year, "Death Year": death_year, "Location of Grave": grave_address}, ignore_index= True)
 
+    # findagrave.com has quite a few duplicate entries
+    data_table = data_table.drop_duplicates(keep="first")
+
     return data_table
