@@ -90,6 +90,7 @@ def get_info(first_name="George", last_name="Washington"):
                     if birth_death == ["NA", "NA"]:
                         continue
 
+                    # assign birth and death year to the appropriate index
                     birth_year = birth_death[0]
                     death_year = birth_death[1]
 
@@ -100,6 +101,7 @@ def get_info(first_name="George", last_name="Washington"):
                 data_table = data_table.append({"Names": name.strip(), "Birth Year": birth_year, "Death Year": death_year, "Location of Grave": grave_address}, ignore_index= True)
 
     # findagrave.com has quite a few duplicate entries
+    # get rid of duplicates that share all column data, keep the first occurrence
     data_table = data_table.drop_duplicates(keep="first")
 
     return data_table
