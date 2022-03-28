@@ -23,7 +23,7 @@ def get_file(first_name, last_name, page):
 
 def get_info(first_name="George", last_name="Washington"):
     # Define the empty dataframe
-    data_table = pd.DataFrame(columns = ["Names", "Birth Year", "Death Year", "Location of Grave"])
+    data_table = pd.DataFrame(columns = ["Names", "Birth Year", "Death Year", "Location of Grave", "Longitude", "Latitude", "State"])
 
     # get HTML of first page
     page = get_file(first_name, last_name, "1")
@@ -57,7 +57,8 @@ def get_info(first_name="George", last_name="Washington"):
                 name = memorial_item.find("i").string
 
                 # grave address
-                if memorial_item.find("p", attrs = {'class':'addr-cemet'}) is not None:
+                if memorial_item.find("p", attrs = {'class':'addr-cemet'}) is not None and\
+                    "unknown" not in memorial_item.find("p", attrs = {'class':'addr-cemet'}):
                     # find the text in <p> with class = addr-cemet
                     grave_address = memorial_item.find("p", attrs = {'class':'addr-cemet'}).string
                 else: # skip to next memorial without recording data
@@ -103,3 +104,5 @@ def get_info(first_name="George", last_name="Washington"):
     data_table = data_table.drop_duplicates(keep="first")
 
     return data_table
+
+
