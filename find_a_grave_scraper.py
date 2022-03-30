@@ -21,16 +21,16 @@ def get_file(first_name, last_name, page):
     """
     # define search url based on user input
     url = (
-        f"https://www.findagrave.com/memorial/search?firstname={first_name}&"
-        f"middlename=&lastname={last_name}&birthyear=&birthyearfilter=&"
-        "deathyear=&deathyearfilter=&location=&locationId=&memorialid=&mcid=&"
-        f"linkedToName=&datefilter=&orderby=r&plot=&page={page}#sr-1075")
+        f'https://www.findagrave.com/memorial/search?firstname={first_name}&'
+        f'middlename=&lastname={last_name}&birthyear=&birthyearfilter=&'
+        'deathyear=&deathyearfilter=&location=&locationId=&memorialid=&mcid=&'
+        f'linkedToName=&datefilter=&orderby=r&plot=&page={page}#sr-1075')
 
     page_html = requests.get(url) # HTML from URL
 
     # successful url request code is 200
     if page_html.status_code != 200:
-        sys.exit("Connection Failed.") # stop execution and return error
+        sys.exit('Connection Failed.') # stop execution and return error
 
     return page_html
 
@@ -45,15 +45,15 @@ def collect_birth_and_death(memorial_item):
     Returns:
         A list containing the birth and death year
     """
-    if memorial_item.find(class_ = "birthDeathDates") is not None and\
-    "unknown" not in memorial_item.find(class_ = "birthDeathDates").string:
-        # dates of birth/death are stored in class "birthDeathDates"
-        date = memorial_item.find(class_ = "birthDeathDates").string
+    if memorial_item.find(class_ = 'birthDeathDates') is not None and\
+    'unknown' not in memorial_item.find(class_ = 'birthDeathDates').string:
+        # dates of birth/death are stored in class 'birthDeathDates'
+        date = memorial_item.find(class_ = 'birthDeathDates').string
         # split birth and death dates
-        birth_death_raw = date.split("–")
+        birth_death_raw = date.split('–')
 
         # clean up date formatting, set default null list to write over
-        birth_death = ["NA", "NA"]
+        birth_death = ['NA', 'NA']
         for index, date in enumerate(birth_death_raw):
             # get rid of letters
             date = "".join(filter(str.isdigit, date))
@@ -64,7 +64,7 @@ def collect_birth_and_death(memorial_item):
                 date = date[-4:]
             else: break # don't include data, years default to NA
             birth_death[index] = date
-    else: birth_death = ["NA", "NA"] # birth and death years not known
+    else: birth_death = ['NA', 'NA'] # birth and death years not known
     return birth_death
 
 
@@ -82,44 +82,44 @@ def scrape_memorials(memorial_list,first_name='George',last_name='Washington'):
         A dataframe with processed data for every George Washington.
     """
     # Define the empty dataframe
-    data_table = pd.DataFrame(columns = ["Names",
-                                         "Birth Year",
-                                         "Death Year",
-                                         "Location of Grave"])
+    data_table = pd.DataFrame(columns = ['Names',
+                                         'Birth Year',
+                                         'Death Year',
+                                         'Location of Grave'])
     for memorial_item in memorial_list:
         # double check that the memorial has a name
-        if memorial_item.find("i") is None\
-        or memorial_item.find("i").string is None:
+        if memorial_item.find('i') is None\
+        or memorial_item.find('i').string is None:
             continue # skip to next memorial without recording data
 
         # double check for the name George Washington
-        if first_name+' ' in memorial_item.find("i").string\
-        and ' '+ last_name in memorial_item.find("i").string:
+        if first_name+' ' in memorial_item.find('i').string\
+        and ' '+ last_name in memorial_item.find('i').string:
             # collect the exact name (including title and/or middle name)
-            name = memorial_item.find("i").string
+            name = memorial_item.find('i').string
         else: continue # skip to next memorial without recording data
 
         # check for and get grave address
-        if memorial_item.find("p", attrs = {'class':'addr-cemet'}) is not None:
+        if memorial_item.find('p', attrs = {'class':'addr-cemet'}) is not None:
             # find the text in <p> with class = addr-cemet
-            grave_address = memorial_item.find("p", attrs={'class':'addr-cemet'}).string
+            grave_address = memorial_item.find('p', attrs={'class':'addr-cemet'}).string
         else: continue # skip to next memorial without recording data
 
         # dates of birth and death
         birth_death = collect_birth_and_death(memorial_item)
-        if birth_death == ["NA", "NA"]:
+        if birth_death == ['NA', 'NA']:
             continue # don't include unknown years, skip to next memorial
 
         # add scraped data to the data frame
-        data_table = data_table.append({"Names": name.strip(),
-                                        "Birth Year": birth_death[0],
-                                        "Death Year": birth_death[1],
-                                        "Location of Grave": grave_address},
+        data_table = data_table.append({'Names': name.strip(),
+                                        'Birth Year': birth_death[0],
+                                        'Death Year': birth_death[1],
+                                        'Location of Grave': grave_address},
                                         ignore_index= True)
     return data_table
 
 
-def collect_and_sort_data(first_name="George", last_name="Washington"):
+def collect_and_sort_data(first_name='George', last_name='Washington'):
     """
     Scrape through all pages with relevant results and organize the data from
     each grave into a dataframe.
@@ -133,12 +133,12 @@ def collect_and_sort_data(first_name="George", last_name="Washington"):
         A dataframe with the final processed data for every George Washington.
     """
     # get HTML of first page
-    page = get_file(first_name, last_name, "1")
+    page = get_file(first_name, last_name, '1')
     # parse HTML into Beautiful Soup format
-    parsed = BeautifulSoup(page.content, "html.parser")
+    parsed = BeautifulSoup(page.content, 'html.parser')
 
     # find the max page number
-    max_page = (parsed.find(id = "gotoPage"))["max"]
+    max_page = (parsed.find(id = 'gotoPage'))['max']
 
     # collect data from all pages
     memorial_list = []
@@ -146,14 +146,14 @@ def collect_and_sort_data(first_name="George", last_name="Washington"):
         # get HTML of specified page number
         page = get_file(first_name, last_name, str(page_number + 1))
         # parse HTML into Beautiful Soup format
-        parsed = BeautifulSoup(page.content, "html.parser")
+        parsed = BeautifulSoup(page.content, 'html.parser')
         # each memorial-item is a tag for a grave entry in the database
-        memorial_list.extend(parsed.find_all(class_ = "memorial-item"))
+        memorial_list.extend(parsed.find_all(class_ = 'memorial-item'))
 
     # Iterate through each memorial and collect useful data
     data_table = scrape_memorials(memorial_list)
 
     # findagrave.com has some duplicate entries, only keep the first occurrence
-    data_table = data_table.drop_duplicates(keep="first")
+    data_table = data_table.drop_duplicates(keep='first')
 
     return data_table
