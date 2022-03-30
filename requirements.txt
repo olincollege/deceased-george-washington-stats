@@ -1,0 +1,20 @@
+# The following are the libraries that need to be installed
+
+# used for web scraping
+beautifulsoup4
+requests
+
+# used for organizing data in dataframes
+pandas
+
+# used for further organizing dataframes
+numpy
+
+# used for graphing the histogram
+matplotlib
+
+# used for graphing lifespan and location
+plotly
+
+# used for determinging long and lat from location
+geopy
